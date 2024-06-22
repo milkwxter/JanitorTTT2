@@ -103,7 +103,7 @@ if not timer.Exists("ttt2_jan_timer_cooldown") then
 			end
 
 			-- do special effects
-	  		janBroomEffects(hitEnt)
+	  		EmitSound( "janitorSounds/sweep.wav", hitEnt:GetPos() )
 			-- sweepy viewpunch
 			local sweepPitch = math.Rand(10, 10)
 			local sweepYaw = math.Rand(-10, 10)
@@ -161,11 +161,17 @@ function SWEP:SecondaryAttack()
         end
 
 		-- do special effects
-		janBroomEffects(hitEnt)
+		EmitSound( "janitorSounds/sweep.wav", hitEnt:GetPos() )
 		-- sweepy viewpunch
 		local sweepPitch = math.Rand(10, 10)
 		local sweepYaw = math.Rand(-10, 10)
 		self:GetOwner():ViewPunch(Angle( sweepPitch, sweepYaw, 0 ) )
+		-- make big dustcloud
+		local cdata = EffectData()
+		cdata:SetStart(spos)
+		cdata:SetOrigin(tr.HitPos)
+		cdata:SetNormal(tr.Normal)
+		util.Effect("BloodImpact", cdata)
         
         -- change DNA for the body
         hitEnt.killer_sample = { t = 0, killer = nil }
@@ -174,17 +180,6 @@ function SWEP:SecondaryAttack()
    self:GetOwner():LagCompensation(false)
   end
   -- end of secondary attack code
-end
-
-function janBroomEffects(hitEnt)
-	-- special dust cloud
-	local edata = EffectData()
-    edata:SetOrigin(hitEnt:GetNetworkOrigin())
-    edata:SetEntity(hitEnt)
-	util.Effect("WheelDust", edata)
-
-	-- special sound
-	EmitSound( "janitorSounds/sweep.wav", hitEnt:GetPos() )
 end
 
 function SWEP:CreateWorldModel()
