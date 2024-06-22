@@ -18,7 +18,7 @@ if CLIENT then
   SWEP.Icon = "vgui/ttt/icon_broom"
 
   function SWEP:Initialize()
-    self:AddTTT2HUDHelp("Clean up a body.", "Clean up DNA on a body.")
+    self:AddTTT2HUDHelp("Clean up a body (on a cooldown).", "Clean up DNA on a body.")
   end
 end
 
@@ -26,13 +26,15 @@ SWEP.Kind = WEAPON_EQUIP2
 SWEP.CanBuy = nil
 
 SWEP.UseHands = true
-SWEP.ViewModel              = "models/weapons/c_arms.mdl"
+SWEP.ViewModel              = "models/props_c17/pushbroom.mdl"
 SWEP.WorldModel             = "models/props_c17/pushbroom.mdl"
+SWEP.Pos = Vector(-3,-3,3) -- worldmodel
+SWEP.Ang = Angle(70, 180, 0)
 
 SWEP.AutoSpawnable = false
 SWEP.NoSights = true
 
-SWEP.HoldType = "crowbar"
+SWEP.HoldType = "passive"
 SWEP.LimitedStock = true
 
 SWEP.Primary.Recoil = 0
@@ -95,7 +97,7 @@ if not timer.Exists("ttt2_jan_timer_cooldown") then
 			-- make sure the body is that of a player not a map ragdoll or whatever
 			local corpsePlayer = CORPSE.GetPlayer(hitEnt)
 				if not IsValid(corpsePlayer) then
-			  LANG.Msg(owner, "That is not a player ragdoll! You cannot eat this one.", nil, MSG_MSTACK_WARN)
+			  LANG.Msg(owner, "That is not a player ragdoll! You cannot mop this one.", nil, MSG_MSTACK_WARN)
 			  return
 			end
 			
@@ -113,10 +115,11 @@ if not timer.Exists("ttt2_jan_timer_cooldown") then
 	  -- end of primary attack code
 	end
 end
--- Override original primary attack
+
+-- Override original secondary attack
 function SWEP:SecondaryAttack()
   -- Melee attack code
-  self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
+  self:SetNextSecondaryFire( CurTime() + self.Primary.Delay )
   
   if not IsValid(self:GetOwner()) then return end
 
@@ -144,7 +147,7 @@ function SWEP:SecondaryAttack()
         -- make sure the body is that of a player not a map ragdoll or whatever
         local corpsePlayer = CORPSE.GetPlayer(hitEnt)
 		    if not IsValid(corpsePlayer) then
-          LANG.Msg(owner, "That is not a player ragdoll! You cannot eat this one.", nil, MSG_MSTACK_WARN)
+          LANG.Msg(owner, "That is not a player ragdoll! You cannot remove DNA from this one.", nil, MSG_MSTACK_WARN)
           return
         end
         
@@ -155,4 +158,34 @@ function SWEP:SecondaryAttack()
    self:GetOwner():LagCompensation(false)
   end
   -- end of secondary attack code
+end
+
+
+function SWEP:CreateWorldModel()
+	if !self.WModel then
+		self.WModel = ClientsideModel(self.WorldModel, RENDERGROUP_OPAQUE)
+		self.WModel:SetNoDraw(true)
+		self.WModel:SetBodygroup(1, 1)
+	end
+	return self.WModel
+end
+
+function SWEP:DrawWorldModel()
+	local wm = self:CreateWorldModel()
+	if self.Owner != NULL then
+		local bone = self.Owner:LookupBone("ValveBiped.Bip01_L_Hand")
+		local pos, ang = self.Owner:GetBonePosition(bone)
+			
+		if bone then
+			ang:RotateAroundAxis(ang:Right(), self.Ang.p)
+			ang:RotateAroundAxis(ang:Forward(), self.Ang.y)
+			ang:RotateAroundAxis(ang:Up(), self.Ang.r)
+			wm:SetRenderOrigin(pos + ang:Right() * self.Pos.x + ang:Forward() * self.Pos.y + ang:Up() * self.Pos.z)
+			wm:SetRenderAngles(ang)
+			wm:DrawModel()
+			wm:SetModelScale( 0.8, 0 )
+		end
+	else
+		wm:DrawModel()
+	end
 end
