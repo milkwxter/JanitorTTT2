@@ -11,18 +11,18 @@ if CLIENT then
 
   SWEP.EquipMenuData = {
     type = "item_weapon",
-    name = "Janitor Broom",
-    desc = "Clean up bodies or DNA!"
+    name = "jan_broom_title",
+    desc = "jan_broom_desc"
   }
 
   SWEP.Icon = "vgui/ttt/icon_broom"
 
   function SWEP:Initialize()
-    self:AddTTT2HUDHelp("Clean up a body (on a cooldown).", "Clean up DNA on a body.")
+    self:AddTTT2HUDHelp("label_jan_help_m1", "label_jan_help_m2")
   end
 end
 
-SWEP.Kind = WEAPON_EQUIP2
+SWEP.Kind = WEAPON_CLASS
 SWEP.CanBuy = nil
 
 SWEP.UseHands = true
@@ -45,6 +45,7 @@ SWEP.Primary.Delay = 1
 SWEP.Primary.Ammo = "none"
 
 SWEP.AllowDrop = false
+SWEP.CanBuy = { }
 
 -- Removes the Broom on death or drop
 function SWEP:OnDrop()
@@ -55,10 +56,10 @@ end
 if CLIENT then
     hook.Add("Initialize", "ttt2_jan_init", function()
 		STATUS:RegisterStatus("ttt2_jan_mop_cooldown_status", {
-			hud = Material("vgui/ttt/icons/timer.png"),
+			hud = Material("vgui/ttt/icons/sweepTimer.png"),
 			type = "bad",
-			name = "Mop Cooldown",
-			sidebarDescription = "You have mopped recently and it is on cooldown."
+			name = "jan_sweepCD_title",
+			sidebarDescription = "jan_sweepCD_desc"
 		})
 	end)
 end

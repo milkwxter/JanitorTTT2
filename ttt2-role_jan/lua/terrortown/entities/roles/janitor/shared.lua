@@ -50,14 +50,12 @@ if SERVER then
 	end
 end
 
---Convars
-CreateConVar("ttt2_jan_mop_cooldown", 1, {FCVAR_ARCHIVE, FCVAR_NOTIFY})
-
+-- Convars
+CreateConVar("ttt2_jan_mop_cooldown", 30, {FCVAR_ARCHIVE, FCVAR_NOTIFY}, "How long to wait until sweeping up a body again.", 5, 120)
 
 if CLIENT then
   function ROLE:AddToSettingsMenu(parent)
-    local form = vgui.CreateTTT2Form(parent, "header_roles_additional")
-	
+  local form = vgui.CreateTTT2Form(parent, "header_roles_additional")
 	form:MakeSlider({
       serverConvar = "ttt2_jan_mop_cooldown",
       label = "label_jan_mop_cooldown",
@@ -65,6 +63,5 @@ if CLIENT then
       max = 120,
       decimal = 0
 	})
-	
   end
 end
