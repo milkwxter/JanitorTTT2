@@ -1,6 +1,6 @@
 if SERVER then
   AddCSLuaFile()
-
+  resource.AddFile("materials/vgui/ttt/icons/timer.png")
   resource.AddFile("materials/vgui/ttt/dynamic/roles/icon_jan.vmt")
 end
 
@@ -48,4 +48,23 @@ if SERVER then
 	function ROLE:RemoveRoleLoadout(ply, isRoleChange)
 		ply:StripWeapon("weapon_ttt2_jan_broom")
 	end
+end
+
+--Convars
+CreateConVar("ttt2_jan_mop_cooldown", 1, {FCVAR_ARCHIVE, FCVAR_NOTIFY})
+
+
+if CLIENT then
+  function ROLE:AddToSettingsMenu(parent)
+    local form = vgui.CreateTTT2Form(parent, "header_roles_additional")
+	
+	form:MakeSlider({
+      serverConvar = "ttt2_jan_mop_cooldown",
+      label = "label_jan_mop_cooldown",
+      min = 5,
+      max = 120,
+      decimal = 0
+	})
+	
+  end
 end
