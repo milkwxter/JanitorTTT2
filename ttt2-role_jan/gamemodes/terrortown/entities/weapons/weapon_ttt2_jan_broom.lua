@@ -101,9 +101,17 @@ if not timer.Exists("ttt2_jan_timer_cooldown") then
 			  LANG.Msg(owner, "That is not a player ragdoll! You cannot mop this one.", nil, MSG_MSTACK_WARN)
 			  return
 			end
+
+			-- do special effects
+	  		janBroomEffects(hitEnt)
+			-- sweepy viewpunch
+			local sweepPitch = math.Rand(10, 10)
+			local sweepYaw = math.Rand(-10, 10)
+			self:GetOwner():ViewPunch(Angle( sweepPitch, sweepYaw, 0 ) )
 			
-			-- then delete body cus he eats it
+			-- then delete body cus he sweeps it
 			hitEnt:Remove()
+
 			-- start the cooldown timer
 			STATUS:AddTimedStatus(self:GetOwner(), "ttt2_jan_mop_cooldown_status", GetConVar("ttt2_jan_mop_cooldown"):GetInt() , true)
 				timer.Create("ttt2_jan_timer_cooldown", GetConVar("ttt2_jan_mop_cooldown"):GetInt() , 1, function()
@@ -151,6 +159,13 @@ function SWEP:SecondaryAttack()
           LANG.Msg(owner, "That is not a player ragdoll! You cannot remove DNA from this one.", nil, MSG_MSTACK_WARN)
           return
         end
+
+		-- do special effects
+		janBroomEffects(hitEnt)
+		-- sweepy viewpunch
+		local sweepPitch = math.Rand(10, 10)
+		local sweepYaw = math.Rand(-10, 10)
+		self:GetOwner():ViewPunch(Angle( sweepPitch, sweepYaw, 0 ) )
         
         -- change DNA for the body
         hitEnt.killer_sample = { t = 0, killer = nil }
@@ -161,6 +176,16 @@ function SWEP:SecondaryAttack()
   -- end of secondary attack code
 end
 
+function janBroomEffects(hitEnt)
+	-- special dust cloud
+	local edata = EffectData()
+    edata:SetOrigin(hitEnt:GetNetworkOrigin())
+    edata:SetEntity(hitEnt)
+	util.Effect("WheelDust", edata)
+
+	-- special sound
+	EmitSound( "janitorSounds/sweep.wav", hitEnt:GetPos() )
+end
 
 function SWEP:CreateWorldModel()
 	if !self.WModel then
