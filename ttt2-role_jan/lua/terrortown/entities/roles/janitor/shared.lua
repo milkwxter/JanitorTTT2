@@ -51,7 +51,7 @@ if SERVER then
 end
 
 -- Convars
-CreateConVar("ttt2_jan_mop_cooldown", 30, {FCVAR_ARCHIVE, FCVAR_NOTIFY}, "How long to wait until sweeping up a body again.", 5, 120)
+CreateConVar("ttt2_jan_mop_cooldown", 60, {FCVAR_ARCHIVE, FCVAR_NOTIFY}, "How long to wait until sweeping up a body again.", 5, 120)
 
 if CLIENT then
   function ROLE:AddToSettingsMenu(parent)
