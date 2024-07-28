@@ -111,7 +111,7 @@ if not timer.Exists("ttt2_jan_timer_cooldown") then
 			
 			-- then delete body cus he sweeps it
 			hitEnt:Remove()
-			LANG.Msg(owner, "Successfully sweeped up the body.", nil, MSG_MSTACK_PLAIN)
+			LANG.Msg(self:GetOwner(), "Successfully sweeped up the body.", nil, MSG_MSTACK_PLAIN)
 
 			-- start the cooldown timer
 			STATUS:AddTimedStatus(self:GetOwner(), "ttt2_jan_mop_cooldown_status", GetConVar("ttt2_jan_mop_cooldown"):GetInt() , true)
@@ -157,7 +157,7 @@ function SWEP:SecondaryAttack()
         -- make sure the body is that of a player not a map ragdoll or whatever
         local corpsePlayer = CORPSE.GetPlayer(hitEnt)
 		    if not IsValid(corpsePlayer) then
-          LANG.Msg(owner, "That is not a player ragdoll! You cannot remove DNA from this one.", nil, MSG_MSTACK_WARN)
+          LANG.Msg(self:GetOwner(), "That is not a player ragdoll! You cannot remove DNA from this one.", nil, MSG_MSTACK_WARN)
           return
         end
 
@@ -176,7 +176,7 @@ function SWEP:SecondaryAttack()
         
         -- change DNA for the body
         hitEnt.killer_sample = { t = 0, killer = nil }
-		LANG.Msg(owner, "Successfully removed DNA from the body.", nil, MSG_MSTACK_PLAIN)
+		LANG.Msg(self:GetOwner(), "Successfully removed DNA from the body.", nil, MSG_MSTACK_PLAIN)
 	   end
    end
    self:GetOwner():LagCompensation(false)
